@@ -9,7 +9,7 @@ public class Main {
             int a = sc.nextInt();
             int b = sc.nextInt();
             // TODO Run your method here to compute and print the GCD of a and b!
-            System.out.println(0);
+            System.out.println(GCD.gcd(a,b));
         }
     }
 
