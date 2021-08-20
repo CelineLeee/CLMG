@@ -11,6 +11,11 @@ public class PascalTriangle {
     public static int computeBinomialCoef(int n, int k) {
         if (n < 0 || k < 0)
             throw new AssertionError("Invalid input!");
+        else if (k == 0 || k == n)
+            return 1;
+        else
+            return computeBinomialCoef(n-1, k-1) + computeBinomialCoef(n-1, k);
+
 
         // [TODO] Fill your code to compute a binomial coefficient.
         // Note that you have to use recursive function call.
@@ -23,6 +28,14 @@ public class PascalTriangle {
      * @param n A number of rows in the triangle
      */
     public static void drawPascalTriangle(int n) {
+        for (int i = 0; i <= n; ++i) {
+            for (int j = 0; j <= i ; ++j) {
+                int x = computeBinomialCoef(i, j);
+                System.out.print(x + " ");
+            }
+            System.out.print("\n");
+        }
+
         // TODO Fill your code to print a Pascal's triangle with n + 1 rows.
         // Hint 1: use computeBinomialCoef method multiple times.
         // Hint 2: use loop statements

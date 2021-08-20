@@ -9,6 +9,9 @@ public class GCD {
     public static int gcd(int a, int b) {
         // TODO Fill your code to calculate a greatest common divisor for a and b.
         // Note that you have to use recursive function call.
-        return 0;
+        if (b != 0)
+            return gcd(b, a % b);
+        else
+            return a;
     }
 }
