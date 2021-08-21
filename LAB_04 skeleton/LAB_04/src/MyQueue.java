@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 
 public class MyQueue<E> implements Queue<E> {
 
@@ -7,26 +8,55 @@ public class MyQueue<E> implements Queue<E> {
 
 	@Override
 	public void enqueue(E item) {
-		// TODO Auto-generated method stub
-
+		Node<E> oldlast = last;
+		last = new Node<>(item,null );
+		if (isEmpty()) first = last;
+		else oldlast.setNext(last);
+		size ++;
 	}
 
 	@Override
 	public E dequeue() {
-		// TODO Auto-generated method stub
-		return null;
+		if (isEmpty()) return null;
+		E oldfirst = first.getItem();
+		first = first.getNext();
+		size --;
+		if (isEmpty()) last = null;
+		return oldfirst;
 	}
 
 	@Override
 	public E pop() {
-		// TODO Auto-generated method stub
-
-		return null;
+		if (isEmpty()) return null;
+		Node<E> oldlast = last;
+		Node<E> next = first.getNext();
+		if (next == null) {
+			first = null;
+			last = null;
+		}
+		else {
+			while (next.getNext().getItem() != last.getItem()) {
+				next = next.getNext();
+			}
+			next.setNext(null);
+			last = next;
+		}
+		size --;
+		return oldlast.getItem();
 	}
 
 	@Override
 	public void clear() {
-
+//		first.setItem(null);
+//		Node<E> next = first.getNext();
+//		while (next != last) {
+//			next.setItem(null);
+//			next = next.getNext();
+//		}
+//		size =
+		first = null;
+		last = null;
+		size = 0;
 	}
 
 	@Override
