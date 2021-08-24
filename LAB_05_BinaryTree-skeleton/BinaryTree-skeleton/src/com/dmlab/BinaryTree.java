@@ -1,4 +1,6 @@
 package com.dmlab;
+import javax.swing.*;
+import java.security.KeyStore;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -41,8 +43,28 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			None
 		 */
 		public void insert(Key key, E value) {
-			// TODO: Fill this function
+			if (mKey == null) {
+				mKey = key;
+				mValue = value;
+			}
 
+			else {
+				int compare = key.compareTo(mKey);
+				if (compare < 0) {
+					if (mLeft == null)
+						mLeft = new Node(key, value);
+					else
+						mLeft.insert(key, value);
+				}
+				else if (compare > 0) {
+					if (mRight == null)
+						mRight = new Node(key, value);
+					else
+						mRight.insert(key, value);
+				}
+				else if (compare == 0)
+					mValue = value;
+			}
 		}
 
 		/**
@@ -53,9 +75,15 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			null, if there is no matching node in this subtree.
 		 */
 		public E find(Key key) {
-			// TODO: Fill this function
-			return null;
-
+			int compare = key.compareTo(mKey);
+			if (compare == 0)
+				return mValue;
+			else if (compare < 0)
+				return mLeft.find(key);
+			else if (compare > 0)
+				return mRight.find(key);
+			else
+				return null;
 		}
 
 		@Override
@@ -69,7 +97,11 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			The String to be printed-out which contains series of nodes as the preorder traversal.
 		 */
 		public String preorder() {
-			// TODO: Fill this function
+			System.out.println(this.toString());
+			if (mLeft != null)
+				mLeft.preorder();
+			if (mRight != null)
+				mRight.preorder();
 			return null;
 		}
 
@@ -79,7 +111,9 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			The String to be printed-out which contains series of nodes as the inorder traversal.
 		 */
 		public String inorder() {
-			// TODO: Fill this function
+			mLeft.inorder();
+			System.out.print(this.toString());
+			mRight.inorder();
 			return null;
 		}
 
@@ -89,7 +123,9 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			The String to be printed-out which contains series of nodes as the postorder traversal.
 		 */
 		public String postorder() {
-			// TODO: Fill this function
+			mLeft.postorder();
+			mRight.postorder();
+			System.out.print(this.toString());
 			return null;
 		}
 
@@ -99,8 +135,13 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			height
 		 */
 		public boolean iscomplete(Node root) {
-            // TODO: Fill this function
-
+			if (mLeft != null) {
+				if (iscomplete(mLeft) == false)
+					return false;
+			} else if (mRight != null) {
+				if (iscomplete(mRight) == false)
+					return false;
+			}
 			return true;
 		}
 
@@ -110,9 +151,20 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			height
 		 */
 		public int height() {
-			// TODO: Fill this function
-			return 0;
-
+			int height = 1;
+			if (mLeft == null && mRight != null)
+				height = mRight.height() + 1;
+			else if (mLeft != null && mRight == null)
+				height = mLeft.height() + 1;
+			else if (mLeft != null && mRight != null) {
+				int left = mLeft.height();
+				int right = mRight.height();
+				if (left >= right)
+					height = left + 1;
+				else
+					height = right + 1;
+			}
+			return height;
 		}
 
 		public Node findMin() {
@@ -129,8 +181,89 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		 * 			the node of which parent needs to point after the deletion.
 		 */
 		public Node delete(Key key) {
-			// TODO: Fill this function
-			return null;
+			Node ss = new Node(null, null);
+			int compare = key.compareTo(mKey);
+			if (find(key) != null) {
+				if (compare == 0) {
+					if (mLeft == null && mRight == null) {
+						mKey = null;
+						mValue = null;
+						ss = null;
+					}
+					else if (mLeft != null && mRight == null) {
+						ss = mLeft;
+						mKey = mLeft.getKey();
+						mValue = mLeft.getValue();
+						mRight = mLeft.mRight;
+						mLeft = mLeft.mLeft;
+					}
+					else if (mLeft == null && mRight != null) {
+						ss = mRight;
+						mKey = mRight.getKey();
+						mValue = mRight.getValue();
+						mLeft = mRight.mLeft;
+						mRight = mRight.mRight;
+					}
+					else {
+
+					}
+
+				}
+				else if (compare < 0) {
+					mLeft = mLeft.delete(key);
+				}
+				else if (compare > 0) {
+					mRight = mRight.delete(key);
+				}
+			}
+			return ss;
+
+//			Node parent = this;
+//			Node ss = new Node(null, null);
+//			int compare = key.compareTo(mKey);
+//			if (find(key) != null)
+//				if (compare == 0) {
+//					if (mLeft == null && mRight == null) {
+//						parent.mLeft = null;
+//						parent.mRight = null;
+//						ss = null;
+//						System.out.print(1);
+//					}
+//					else if (mLeft == null && mRight != null) {
+//						System.out.print(parent);
+//						parent.mRight = mRight;
+//						ss = mRight;
+//						System.out.print(2);
+//						System.out.print(ss);
+//					}
+//					else if (mLeft != null && mRight == null) {
+//						parent.mLeft = mLeft;
+//						ss = mLeft;
+//					}
+//					else {
+//						Node s = mRight.findMin();
+//						mKey = s.getKey();
+//						mValue = s.getValue();
+//						if (s == mRight)
+//							parent.mRight = s.mRight;
+//						else
+//							s.mLeft = s.mRight;
+//						ss = s;
+//					}
+//				}
+//				else if (compare < 0)
+//					mLeft.delete(key);
+//				else if (compare > 0) {
+//					if (mLeft == null && mRight != null) {
+//						Node parent2 = this;
+//						System.out.print(parent);
+//						System.out.println(0);
+//						mRight.delete(key);
+//					}
+//					else if (mLeft == null && mRight == null)
+//						this.delete(key);
+//				}
+//			return ss;
 		}
 
 	}
