@@ -31,48 +31,44 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		/**
 		 * Insert a node to the subtree, the root of which is this node.
 		 * If the subtree already has node with the given key in the param,
-		 * 		replace the value of the node in the subtree.
+		 * replace the value of the node in the subtree.
 		 * Please compare keys using compareTo method.
 		 * e.g. when "int compare = KEY0.compareTo(KEY1)"
-		 * 		if compare == 0, this means KEY0 is equal to KEY1
-		 * 		if compare > 0, KEY0 > KEY1
-		 * 		if compare < 0, KEY0 < KEY1
+		 * if compare == 0, this means KEY0 is equal to KEY1
+		 * if compare > 0, KEY0 > KEY1
+		 * if compare < 0, KEY0 < KEY1
+		 *
 		 * @param key
 		 * @param value
-		 * @return
-		 * 			None
+		 * @return None
 		 */
 		public void insert(Key key, E value) {
 			if (mKey == null) {
 				mKey = key;
 				mValue = value;
-			}
-
-			else {
+			} else {
 				int compare = key.compareTo(mKey);
 				if (compare < 0) {
 					if (mLeft == null)
 						mLeft = new Node(key, value);
 					else
 						mLeft.insert(key, value);
-				}
-				else if (compare > 0) {
+				} else if (compare > 0) {
 					if (mRight == null)
 						mRight = new Node(key, value);
 					else
 						mRight.insert(key, value);
-				}
-				else if (compare == 0)
+				} else if (compare == 0)
 					mValue = value;
 			}
 		}
 
 		/**
 		 * Find the value of item by the key in the subtree, the root of which is this node.
+		 *
 		 * @param key
-		 * @return
-		 * 			the value of item matched with the given key.
-		 * 			null, if there is no matching node in this subtree.
+		 * @return the value of item matched with the given key.
+		 * null, if there is no matching node in this subtree.
 		 */
 		public E find(Key key) {
 			int compare = key.compareTo(mKey);
@@ -93,46 +89,59 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 
 		/**
 		 * Traverse with the preorder in this subtree.
-		 * @return
-		 * 			The String to be printed-out which contains series of nodes as the preorder traversal.
+		 *
+		 * @return The String to be printed-out which contains series of nodes as the preorder traversal.
 		 */
 		public String preorder() {
-			System.out.println(this.toString());
-			if (mLeft != null)
-				mLeft.preorder();
-			if (mRight != null)
-				mRight.preorder();
-			return null;
+			String r = "";
+			if (this != null) {
+				r = r.concat(this.toString());
+				if (mLeft != null)
+					r = r.concat(mLeft.preorder());
+				if (mRight != null)
+					r = r.concat(mRight.preorder());
+			}
+			return r;
 		}
 
 		/**
 		 * Traverse with the inorder in this subtree.
-		 * @return
-		 * 			The String to be printed-out which contains series of nodes as the inorder traversal.
+		 *
+		 * @return The String to be printed-out which contains series of nodes as the inorder traversal.
 		 */
 		public String inorder() {
-			mLeft.inorder();
-			System.out.print(this.toString());
-			mRight.inorder();
-			return null;
+			String r = "";
+			if (this != null) {
+				if (mLeft != null)
+					r = r.concat(mLeft.inorder());
+				r = r.concat(this.toString());
+				if (mRight != null)
+					r = r.concat(mRight.inorder());
+			}
+			return r;
 		}
 
 		/**
 		 * Traverse with the postorder in this subtree.
-		 * @return
-		 * 			The String to be printed-out which contains series of nodes as the postorder traversal.
+		 *
+		 * @return The String to be printed-out which contains series of nodes as the postorder traversal.
 		 */
 		public String postorder() {
-			mLeft.postorder();
-			mRight.postorder();
-			System.out.print(this.toString());
-			return null;
+			String r = "";
+			if (this != null) {
+				if (mLeft != null)
+					r = r.concat(mLeft.postorder());
+				if (mRight != null)
+					r = r.concat(mRight.postorder());
+				r = r.concat(this.toString());
+			}
+			return r;
 		}
 
 		/**
 		 * Find the height of this subtree
-		 * @return
-		 * 			height
+		 *
+		 * @return height
 		 */
 		public boolean iscomplete(Node root) {
 			if (mLeft != null) {
@@ -147,8 +156,8 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 
 		/**
 		 * Find the height of this subtree
-		 * @return
-		 * 			height
+		 *
+		 * @return height
 		 */
 		public int height() {
 			int height = 1;
@@ -177,95 +186,72 @@ public class BinaryTree<Key extends Comparable<? super Key>, E> {
 		/**
 		 * Delete a node,the key of which match with the key given as param, from this subtree.
 		 * You may need to define new method to find minimum of the subtree.
-		 * @return
-		 * 			the node of which parent needs to point after the deletion.
+		 *
+		 * @return the node of which parent needs to point after the deletion.
 		 */
+
 		public Node delete(Key key) {
-			Node ss = new Node(null, null);
-			int compare = key.compareTo(mKey);
-			if (find(key) != null) {
-				if (compare == 0) {
-					if (mLeft == null && mRight == null) {
-						mKey = null;
-						mValue = null;
-						ss = null;
-					}
-					else if (mLeft != null && mRight == null) {
-						ss = mLeft;
-						mKey = mLeft.getKey();
-						mValue = mLeft.getValue();
-						mRight = mLeft.mRight;
-						mLeft = mLeft.mLeft;
-					}
-					else if (mLeft == null && mRight != null) {
-						ss = mRight;
-						mKey = mRight.getKey();
-						mValue = mRight.getValue();
-						mLeft = mRight.mLeft;
-						mRight = mRight.mRight;
-					}
-					else {
+			// pointer to store the parent of the current node
+			Node parent = null;
+			// start with the root node
+			Node curr = this;
 
-					}
+			// search key in the BST and set its parent pointer
+			while (curr != null && curr.mKey != key) {
+				parent = curr;
+				int compare = key.compareTo(mKey);
+				if (compare < 0)
+					curr = curr.mLeft;
+				else if (compare > 0)
+					curr = curr.mRight;
+			}
+			if (curr != null) {
+				// Case 1: node to be deleted has no children, i.e., it is a leaf node
+				if (curr.mLeft == null && curr.mRight == null) {
+					if (curr == this)
+						return null;
+					else if (parent.mLeft == curr)
+						parent.mLeft = null;
+					else if (parent.mRight == curr)
+						parent.mRight = null;
+				}
 
+				// Case 2: node to be deleted has two children
+				else if (curr.mLeft != null && curr.mRight != null) {
+					// find its inorder successor node
+					Node successor = curr.mRight.findMin();
+
+					// store successor value
+					Key k = successor.mKey;
+					E val = successor.mValue;
+
+					// recursively delete the successor. Note that the successor
+					// will have at most one child (right child)
+					mRight.delete(successor.mKey);
+
+					// copy value of the successor to the current node
+					curr.mKey = k;
+					curr.mValue = val;
 				}
-				else if (compare < 0) {
-					mLeft = mLeft.delete(key);
-				}
-				else if (compare > 0) {
-					mRight = mRight.delete(key);
+
+				// Case 3: node to be deleted has only one child
+				else {
+					// choose a child node
+					Node child = (curr.mLeft != null) ? curr.mLeft : curr.mRight;
+					if (curr == this) {
+						this.mKey = child.mKey;
+						this.mValue = child.mValue;
+						this.mLeft = child.mLeft;
+						this.mRight = child.mRight;
+					}
+					else if (curr == parent.mLeft)
+						parent.mLeft = child;
+					else if (curr == parent.mRight)
+						parent.mRight = child;
 				}
 			}
-			return ss;
-
-//			Node parent = this;
-//			Node ss = new Node(null, null);
-//			int compare = key.compareTo(mKey);
-//			if (find(key) != null)
-//				if (compare == 0) {
-//					if (mLeft == null && mRight == null) {
-//						parent.mLeft = null;
-//						parent.mRight = null;
-//						ss = null;
-//						System.out.print(1);
-//					}
-//					else if (mLeft == null && mRight != null) {
-//						System.out.print(parent);
-//						parent.mRight = mRight;
-//						ss = mRight;
-//						System.out.print(2);
-//						System.out.print(ss);
-//					}
-//					else if (mLeft != null && mRight == null) {
-//						parent.mLeft = mLeft;
-//						ss = mLeft;
-//					}
-//					else {
-//						Node s = mRight.findMin();
-//						mKey = s.getKey();
-//						mValue = s.getValue();
-//						if (s == mRight)
-//							parent.mRight = s.mRight;
-//						else
-//							s.mLeft = s.mRight;
-//						ss = s;
-//					}
-//				}
-//				else if (compare < 0)
-//					mLeft.delete(key);
-//				else if (compare > 0) {
-//					if (mLeft == null && mRight != null) {
-//						Node parent2 = this;
-//						System.out.print(parent);
-//						System.out.println(0);
-//						mRight.delete(key);
-//					}
-//					else if (mLeft == null && mRight == null)
-//						this.delete(key);
-//				}
-//			return ss;
+			return this;
 		}
-
 	}
 
 	private Node mRoot;
